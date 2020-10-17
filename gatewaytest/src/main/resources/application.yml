@@ -1,0 +1,42 @@
+server:
+  port: 8000
+spring:
+  application:
+    name: test-way
+  #配置路由
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      #设置跨域
+
+#      discovery:
+#        locator:
+#          enabled: true
+      routes:
+            - id: testway
+              uri: lb://product       #http://localhost:8472/  lb代表负载均衡
+              order: 1
+              predicates:
+                - Path=/product/**
+               # - Before=2020-09-05T00:00:00.000+08:00
+                #- Age=18,60
+              filters:
+                - StripPrefix=1
+                - Log=true,false
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+
+my:
+  jwt:
+    #跳过认证的路由
+    skip-auth-urls:
+      - /ceshi
+      - /test
+
+    effective-time: 7d
